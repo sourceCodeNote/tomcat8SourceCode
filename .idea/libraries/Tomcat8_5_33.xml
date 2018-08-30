@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Tomcat8.5.33">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/target/Tomcat8.5.33.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

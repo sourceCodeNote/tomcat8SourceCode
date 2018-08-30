@@ -1,0 +1,43 @@
+<component name="libraryTable">
+  <library name="lib3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/hamcrest-core-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/jasper-el.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-jdbc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/ecj-4.6.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/objenesis-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/catalina-ant.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-coyote.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/ecj-4.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/servlet-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/catalina-ha.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/websocket-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/ant-1.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/jaspic-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-i18n-es.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-i18n-fr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-util-scan.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/ant-launcher-1.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/jaxrpc-api-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/easymock-3.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/el-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/catalina.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-i18n-ja.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/jsp-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-dbcp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-websocket.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-i18n-ru.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/annotations-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/catalina-storeconfig.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/junit-4.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/wsdl4j-1.6.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/catalina-tribes.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-jni.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/jasper.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tom/tomcat8533/lunch/lib/tomcat-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
