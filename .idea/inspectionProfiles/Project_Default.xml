@@ -1,0 +1,15 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Annotation" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AnnotationClass" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AssertAsName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AssertStatement" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AutoBoxing" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AutoUnboxing" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="EnumAsName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="EnumClass" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ForeachStatement" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="VarargParameter" enabled="true" level="ERROR" enabled_by_default="true" />
+  </profile>
+</component>

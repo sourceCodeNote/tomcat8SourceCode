@@ -75,7 +75,7 @@ public class CoyoteAdapter implements Adapter {
     private static final EnumSet<SessionTrackingMode> SSL_ONLY =
         EnumSet.of(SessionTrackingMode.SSL);
 
-    public static final int ADAPTER_NOTES = 1;
+    public static final int  ADAPTER_NOTES = 1;
 
 
     protected static final boolean ALLOW_BACKSLASH =
@@ -295,6 +295,8 @@ public class CoyoteAdapter implements Adapter {
     }
 
 
+
+    //TODO 请求 开始处理的地方
     @Override
     public void service(org.apache.coyote.Request req, org.apache.coyote.Response res)
             throws Exception {
@@ -332,15 +334,20 @@ public class CoyoteAdapter implements Adapter {
 
         try {
             // Parse and set Catalina and configuration specific
-            // request parameters
+            // request parameters 将
             postParseSuccess = postParseRequest(req, request, res, response);
             if (postParseSuccess) {
                 //check valves if we support async
                 request.setAsyncSupported(
                         connector.getService().getContainer().getPipeline().isAsyncSupported());
                 // Calling the container
-                connector.getService().getContainer().getPipeline().getFirst().invoke(
-                        request, response);
+                //已经实例化 Pipeline-Value
+                // 1: StandardService获得唯一 StandardEngine
+                // 2: 获得 StandardPipeline(StandardEngine实例化时父类创建创建)
+                // 3: 获得 StandardEngineValve(StandardEngine实例化时创建)
+                // 4: 调用 invoke(...)
+                // 5: invoke() 时,从Request中 获得 StandardHost 实例
+                connector.getService().getContainer().getPipeline().getFirst().invoke(request, response);
             }
             if (request.isAsync()) {
                 async = true;
@@ -359,8 +366,7 @@ public class CoyoteAdapter implements Adapter {
                     }
                 }
 
-                Throwable throwable =
-                        (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+                Throwable throwable = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
 
                 // If an async request was started, is not going to end once
                 // this container thread finishes and an error occurred, trigger

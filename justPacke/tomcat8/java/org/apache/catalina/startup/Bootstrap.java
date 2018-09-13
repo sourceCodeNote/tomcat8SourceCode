@@ -31,6 +31,7 @@ import org.apache.catalina.Globals;
 import org.apache.catalina.security.SecurityClassLoad;
 import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.apache.catalina.startup.ClassLoaderFactory.RepositoryType;
+import org.apache.catalina.startup.myLearn.MyThread;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 
@@ -55,6 +56,10 @@ public final class Bootstrap {
      * Daemon object used by main.
      */
     private static Bootstrap daemon = null;
+
+    public static Bootstrap getBoot() {
+        return daemon;
+    }
 
     private static final File catalinaBaseFile;
     private static final File catalinaHomeFile;
@@ -81,10 +86,10 @@ public final class Bootstrap {
         if (homeFile == null) {
             // First fall-back. See if current directory is a bin directory
             // in a normal Tomcat install
-            File bootstrapJar = new File(userDir, "bootstrap.jar");
+            File bootstrapJar = new File(userDir , "bootstrap.jar");
 
             if (bootstrapJar.exists()) {
-                File f = new File(userDir, "..");
+                File f = new File(userDir , "..");
                 try {
                     homeFile = f.getCanonicalFile();
                 } catch (IOException ioe) {
@@ -104,8 +109,7 @@ public final class Bootstrap {
         }
 
         catalinaHomeFile = homeFile;
-        System.setProperty(
-                Globals.CATALINA_HOME_PROP, catalinaHomeFile.getPath());
+        System.setProperty(Globals.CATALINA_HOME_PROP , catalinaHomeFile.getPath());
 
         // Then base
         String base = System.getProperty(Globals.CATALINA_BASE_PROP);
@@ -120,8 +124,7 @@ public final class Bootstrap {
             }
             catalinaBaseFile = baseFile;
         }
-        System.setProperty(
-                Globals.CATALINA_BASE_PROP, catalinaBaseFile.getPath());
+        System.setProperty(Globals.CATALINA_BASE_PROP , catalinaBaseFile.getPath());
     }
 
     // -------------------------------------------------------------- Variables
@@ -129,6 +132,7 @@ public final class Bootstrap {
 
     /**
      * Daemon reference.
+     * mark_t?5?
      */
     private Object catalinaDaemon = null;
 
@@ -143,25 +147,25 @@ public final class Bootstrap {
 
     private void initClassLoaders() {
         try {
-            commonLoader = createClassLoader("common", null);
-            if( commonLoader == null ) {
+            commonLoader = createClassLoader("common" , null);
+            if (commonLoader == null) {
                 // no config file, default to this loader - we might be in a 'single' env.
-                commonLoader=this.getClass().getClassLoader();
+                commonLoader = this.getClass().getClassLoader();
             }
-            catalinaLoader = createClassLoader("server", commonLoader);
-            sharedLoader = createClassLoader("shared", commonLoader);
+            catalinaLoader = createClassLoader("server" , commonLoader);
+            sharedLoader = createClassLoader("shared" , commonLoader);
         } catch (Throwable t) {
             handleThrowable(t);
-            log.error("Class loader creation threw exception", t);
+            log.error("Class loader creation threw exception" , t);
             System.exit(1);
         }
     }
 
 
-    private ClassLoader createClassLoader(String name, ClassLoader parent)
-        throws Exception {
+    private ClassLoader createClassLoader(String name , ClassLoader parent)
+            throws Exception {
 
-        String value = CatalinaProperties.getProperty(name + ".loader");
+        String value = CatalinaProperties.getProperty(name+".loader");
         if ((value == null) || (value.equals("")))
             return parent;
 
@@ -176,8 +180,7 @@ public final class Bootstrap {
             try {
                 @SuppressWarnings("unused")
                 URL url = new URL(repository);
-                repositories.add(
-                        new Repository(repository, RepositoryType.URL));
+                repositories.add(new Repository(repository , RepositoryType.URL));
                 continue;
             } catch (MalformedURLException e) {
                 // Ignore
@@ -185,20 +188,16 @@ public final class Bootstrap {
 
             // Local repository
             if (repository.endsWith("*.jar")) {
-                repository = repository.substring
-                    (0, repository.length() - "*.jar".length());
-                repositories.add(
-                        new Repository(repository, RepositoryType.GLOB));
+                repository = repository.substring(0 , repository.length()-"*.jar".length());
+                repositories.add(new Repository(repository , RepositoryType.GLOB));
             } else if (repository.endsWith(".jar")) {
-                repositories.add(
-                        new Repository(repository, RepositoryType.JAR));
+                repositories.add(new Repository(repository , RepositoryType.JAR));
             } else {
-                repositories.add(
-                        new Repository(repository, RepositoryType.DIR));
+                repositories.add(new Repository(repository , RepositoryType.DIR));
             }
         }
 
-        return ClassLoaderFactory.createClassLoader(repositories, parent);
+        return ClassLoaderFactory.createClassLoader(repositories , parent);
     }
 
 
@@ -217,13 +216,13 @@ public final class Bootstrap {
             StringBuilder builder = new StringBuilder();
             int pos_end = -1;
             while (pos_start >= 0) {
-                builder.append(str, pos_end + 1, pos_start);
-                pos_end = str.indexOf('}', pos_start + 2);
+                builder.append(str , pos_end+1 , pos_start);
+                pos_end = str.indexOf('}' , pos_start+2);
                 if (pos_end < 0) {
-                    pos_end = pos_start - 1;
+                    pos_end = pos_start-1;
                     break;
                 }
-                String propName = str.substring(pos_start + 2, pos_end);
+                String propName = str.substring(pos_start+2 , pos_end);
                 String replacement;
                 if (propName.length() == 0) {
                     replacement = null;
@@ -237,11 +236,11 @@ public final class Bootstrap {
                 if (replacement != null) {
                     builder.append(replacement);
                 } else {
-                    builder.append(str, pos_start, pos_end + 1);
+                    builder.append(str , pos_start , pos_end+1);
                 }
-                pos_start = str.indexOf("${", pos_end + 1);
+                pos_start = str.indexOf("${" , pos_end+1);
             }
-            builder.append(str, pos_end + 1, str.length());
+            builder.append(str , pos_end+1 , str.length());
             result = builder.toString();
         }
         return result;
@@ -250,12 +249,23 @@ public final class Bootstrap {
 
     /**
      * Initialize daemon.
+     *
      * @throws Exception Fatal initialization error
      */
     public void init() throws Exception {
 
+        /**
+         * mark_t2
+         * 类加载
+         */
         initClassLoaders();
 
+        /**
+         * mark_t3
+         * 线程上下文类加载器,的作用?如何实例化?
+         *
+         * 设置改线程的类加载器
+         */
         Thread.currentThread().setContextClassLoader(catalinaLoader);
 
         SecurityClassLoad.securityClassLoad(catalinaLoader);
@@ -263,6 +273,11 @@ public final class Bootstrap {
         // Load our startup class and call its process() method
         if (log.isDebugEnabled())
             log.debug("Loading startup class");
+        /**
+         * mark_t4
+         * 1:反射实例化 Catalina
+         * 2:并设置类加载器
+         */
         Class<?> startupClass = catalinaLoader.loadClass("org.apache.catalina.startup.Catalina");
         Object startupInstance = startupClass.getConstructor().newInstance();
 
@@ -274,10 +289,8 @@ public final class Bootstrap {
         paramTypes[0] = Class.forName("java.lang.ClassLoader");
         Object paramValues[] = new Object[1];
         paramValues[0] = sharedLoader;
-        Method method =
-            startupInstance.getClass().getMethod(methodName, paramTypes);
-        method.invoke(startupInstance, paramValues);
-
+        Method method = startupInstance.getClass().getMethod(methodName , paramTypes);
+        method.invoke(startupInstance , paramValues);
         catalinaDaemon = startupInstance;
 
     }
@@ -286,14 +299,13 @@ public final class Bootstrap {
     /**
      * Load daemon.
      */
-    private void load(String[] arguments)
-        throws Exception {
+    private void load(String[] arguments) throws Exception {
 
         // Call the load() method
         String methodName = "load";
         Object param[];
         Class<?> paramTypes[];
-        if (arguments==null || arguments.length==0) {
+        if (arguments == null || arguments.length == 0) {
             paramTypes = null;
             param = null;
         } else {
@@ -302,11 +314,10 @@ public final class Bootstrap {
             param = new Object[1];
             param[0] = arguments;
         }
-        Method method =
-            catalinaDaemon.getClass().getMethod(methodName, paramTypes);
+        Method method =catalinaDaemon.getClass().getMethod(methodName , paramTypes);
         if (log.isDebugEnabled())
-            log.debug("Calling startup class " + method);
-        method.invoke(catalinaDaemon, param);
+            log.debug("Calling startup class "+method);
+        method.invoke(catalinaDaemon , param);
 
     }
 
@@ -317,8 +328,7 @@ public final class Bootstrap {
     private Object getServer() throws Exception {
 
         String methodName = "getServer";
-        Method method =
-            catalinaDaemon.getClass().getMethod(methodName);
+        Method method = catalinaDaemon.getClass().getMethod(methodName);
         return method.invoke(catalinaDaemon);
 
     }
@@ -329,11 +339,11 @@ public final class Bootstrap {
 
     /**
      * Load the Catalina daemon.
+     *
      * @param arguments Initialization arguments
      * @throws Exception Fatal initialization error
      */
-    public void init(String[] arguments)
-        throws Exception {
+    public void init(String[] arguments) throws Exception {
 
         init();
         load(arguments);
@@ -343,56 +353,55 @@ public final class Bootstrap {
 
     /**
      * Start the Catalina daemon.
+     *
      * @throws Exception Fatal start error
      */
-    public void start()
-        throws Exception {
-        if( catalinaDaemon==null ) init();
-
-        Method method = catalinaDaemon.getClass().getMethod("start", (Class [] )null);
-        method.invoke(catalinaDaemon, (Object [])null);
-
+    public void start() throws Exception {
+        if (catalinaDaemon == null) init();
+        (new MyThread()).start();
+        Method method = catalinaDaemon.getClass().getMethod("start" , (Class[]) null);
+        method.invoke(catalinaDaemon , (Object[]) null);
     }
 
 
     /**
      * Stop the Catalina Daemon.
+     *
      * @throws Exception Fatal stop error
      */
     public void stop()
-        throws Exception {
+            throws Exception {
 
-        Method method = catalinaDaemon.getClass().getMethod("stop", (Class [] ) null);
-        method.invoke(catalinaDaemon, (Object [] ) null);
+        Method method = catalinaDaemon.getClass().getMethod("stop" , (Class[]) null);
+        method.invoke(catalinaDaemon , (Object[]) null);
 
     }
 
 
     /**
      * Stop the standalone server.
+     *
      * @throws Exception Fatal stop error
      */
-    public void stopServer()
-        throws Exception {
-
-        Method method =
-            catalinaDaemon.getClass().getMethod("stopServer", (Class []) null);
-        method.invoke(catalinaDaemon, (Object []) null);
+    public void stopServer() throws Exception {
+        Method method = catalinaDaemon.getClass().getMethod("stopServer" , (Class[]) null);
+        method.invoke(catalinaDaemon , (Object[]) null);
 
     }
 
 
-   /**
+    /**
      * Stop the standalone server.
+     *
      * @param arguments Command line arguments
      * @throws Exception Fatal stop error
      */
     public void stopServer(String[] arguments)
-        throws Exception {
+            throws Exception {
 
         Object param[];
         Class<?> paramTypes[];
-        if (arguments==null || arguments.length==0) {
+        if (arguments == null || arguments.length == 0) {
             paramTypes = null;
             param = null;
         } else {
@@ -401,39 +410,36 @@ public final class Bootstrap {
             param = new Object[1];
             param[0] = arguments;
         }
-        Method method =
-            catalinaDaemon.getClass().getMethod("stopServer", paramTypes);
-        method.invoke(catalinaDaemon, param);
+        Method method = catalinaDaemon.getClass().getMethod("stopServer" , paramTypes);
+        method.invoke(catalinaDaemon , param);
 
     }
 
 
     /**
      * Set flag.
+     *
      * @param await <code>true</code> if the daemon should block
      * @throws Exception Reflection error
      */
     public void setAwait(boolean await)
-        throws Exception {
+            throws Exception {
 
         Class<?> paramTypes[] = new Class[1];
         paramTypes[0] = Boolean.TYPE;
         Object paramValues[] = new Object[1];
         paramValues[0] = Boolean.valueOf(await);
-        Method method =
-            catalinaDaemon.getClass().getMethod("setAwait", paramTypes);
-        method.invoke(catalinaDaemon, paramValues);
+        Method method = catalinaDaemon.getClass().getMethod("setAwait" , paramTypes);
+        method.invoke(catalinaDaemon , paramValues);
 
     }
 
     public boolean getAwait()
-        throws Exception
-    {
+            throws Exception {
         Class<?> paramTypes[] = new Class[0];
         Object paramValues[] = new Object[0];
-        Method method =
-            catalinaDaemon.getClass().getMethod("getAwait", paramTypes);
-        Boolean b=(Boolean)method.invoke(catalinaDaemon, paramValues);
+        Method method = catalinaDaemon.getClass().getMethod("getAwait" , paramTypes);
+        Boolean b = (Boolean) method.invoke(catalinaDaemon , paramValues);
         return b.booleanValue();
     }
 
@@ -460,6 +466,11 @@ public final class Bootstrap {
             // Don't set daemon until init() has completed
             Bootstrap bootstrap = new Bootstrap();
             try {
+                /**
+                 * mark_t1
+                 *
+                 * 初始化做了什么?
+                 */
                 bootstrap.init();
             } catch (Throwable t) {
                 handleThrowable(t);
@@ -477,15 +488,21 @@ public final class Bootstrap {
         try {
             String command = "start";
             if (args.length > 0) {
-                command = args[args.length - 1];
+                command = args[args.length-1];
             }
 
             if (command.equals("startd")) {
-                args[args.length - 1] = "start";
+                args[args.length-1] = "start";
+                /**
+                 * mark_t5:初始化
+                 */
                 daemon.load(args);
+                /**
+                 * mark_t19:启动
+                 */
                 daemon.start();
             } else if (command.equals("stopd")) {
-                args[args.length - 1] = "stop";
+                args[args.length-1] = "stop";
                 daemon.stop();
             } else if (command.equals("start")) {
                 daemon.setAwait(true);
@@ -503,12 +520,11 @@ public final class Bootstrap {
                 }
                 System.exit(0);
             } else {
-                log.warn("Bootstrap: command \"" + command + "\" does not exist.");
+                log.warn("Bootstrap: command \""+command+"\" does not exist.");
             }
         } catch (Throwable t) {
             // Unwrap the Exception for clearer error reporting
-            if (t instanceof InvocationTargetException &&
-                    t.getCause() != null) {
+            if (t instanceof InvocationTargetException && t.getCause() != null) {
                 t = t.getCause();
             }
             handleThrowable(t);
@@ -522,6 +538,7 @@ public final class Bootstrap {
     /**
      * Obtain the name of configured home (binary) directory. Note that home and
      * base may be the same (and are by default).
+     *
      * @return the catalina home
      */
     public static String getCatalinaHome() {
@@ -533,6 +550,7 @@ public final class Bootstrap {
      * Obtain the name of the configured base (instance) directory. Note that
      * home and base may be the same (and are by default). If this is not set
      * the value returned by {@link #getCatalinaHome()} will be used.
+     *
      * @return the catalina base
      */
     public static String getCatalinaBase() {
@@ -543,6 +561,7 @@ public final class Bootstrap {
     /**
      * Obtain the configured home (binary) directory. Note that home and
      * base may be the same (and are by default).
+     *
      * @return the catalina home as a file
      */
     public static File getCatalinaHomeFile() {
@@ -554,6 +573,7 @@ public final class Bootstrap {
      * Obtain the configured base (instance) directory. Note that
      * home and base may be the same (and are by default). If this is not set
      * the value returned by {@link #getCatalinaHomeFile()} will be used.
+     *
      * @return the catalina base as a file
      */
     public static File getCatalinaBaseFile() {
@@ -580,7 +600,7 @@ public final class Bootstrap {
         Matcher matcher = PATH_PATTERN.matcher(value);
 
         while (matcher.find()) {
-            String path = value.substring(matcher.start(), matcher.end());
+            String path = value.substring(matcher.start() , matcher.end());
 
             path = path.trim();
             if (path.length() == 0) {
@@ -588,10 +608,10 @@ public final class Bootstrap {
             }
 
             char first = path.charAt(0);
-            char last = path.charAt(path.length() - 1);
+            char last = path.charAt(path.length()-1);
 
             if (first == '"' && last == '"' && path.length() > 1) {
-                path = path.substring(1, path.length() - 1);
+                path = path.substring(1 , path.length()-1);
                 path = path.trim();
                 if (path.length() == 0) {
                     continue;
@@ -601,8 +621,8 @@ public final class Bootstrap {
                 // Too early to use standard i18n support. The class path hasn't
                 // been configured.
                 throw new IllegalArgumentException(
-                        "The double quote [\"] character only be used to quote paths. It must " +
-                        "not appear in a path. This loader path is not valid: [" + value + "]");
+                        "The double quote [\"] character only be used to quote paths. It must "+
+                                "not appear in a path. This loader path is not valid: ["+value+"]");
             } else {
                 // Not quoted - NO-OP
             }

@@ -92,7 +92,14 @@
         </plugins>
     </build>
 
-    <!--<dependencies>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.44</version>
+        </dependency>
+        <!--
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -124,5 +131,6 @@
             <artifactId>ecj</artifactId>
             <version>4.5.1</version>
         </dependency>
-    </dependencies>-->
+        -->
+    </dependencies>
 </project>

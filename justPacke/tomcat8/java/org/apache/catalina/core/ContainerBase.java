@@ -58,6 +58,7 @@ import org.apache.catalina.Valve;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
+import org.apache.catalina.startup.myLearn.MyThread;
 import org.apache.catalina.util.ContextName;
 import org.apache.catalina.util.LifecycleMBeanBase;
 import org.apache.juli.logging.Log;
@@ -912,6 +913,8 @@ public abstract class ContainerBase extends LifecycleMBeanBase
      *
      * @exception LifecycleException if this component detects a fatal error
      *  that prevents this component from being used
+     *
+     *  mark_t?26?:引擎,host,context如何启动的?
      */
     @Override
     protected synchronized void startInternal() throws LifecycleException {
@@ -1272,6 +1275,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
                 names.add(((ContainerBase)next).getObjectName());
             }
         }
+        MyThread.addInfo(children);
         return names.toArray(new ObjectName[names.size()]);
     }
 

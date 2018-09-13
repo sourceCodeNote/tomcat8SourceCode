@@ -35,6 +35,7 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.Server;
 import org.apache.catalina.security.SecurityConfig;
+import org.apache.catalina.startup.myLearn.MyThread;
 import org.apache.juli.ClassLoaderLogManager;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
@@ -520,6 +521,7 @@ public class Catalina {
 
     /**
      * Start a new server instance.
+     * mark_t6:启动 Server
      */
     public void load() {
 
@@ -530,12 +532,23 @@ public class Catalina {
 
         long t1 = System.nanoTime();
 
+        /**
+         * mark_t?6?
+         * 初始化目录?
+         */
         initDirs();
 
         // Before digester - it may be needed
+        /**
+         * mark_t?61?
+         * 初始化命名空间?
+         */
         initNaming();
 
         // Create and execute our Digester
+        /**
+         * mark_t7:配置需要解析的配置文件规则
+         */
         Digester digester = createStartDigester();
 
         InputSource inputSource = null;
@@ -570,15 +583,12 @@ public class Catalina {
             // Alternative: don't bother with xml, just create it manually.
             if (inputStream == null) {
                 try {
-                    inputStream = getClass().getClassLoader()
-                            .getResourceAsStream("server-embed.xml");
+                    inputStream = getClass().getClassLoader().getResourceAsStream("server-embed.xml");
                     inputSource = new InputSource
-                    (getClass().getClassLoader()
-                            .getResource("server-embed.xml").toString());
+                    (getClass().getClassLoader().getResource("server-embed.xml").toString());
                 } catch (Exception e) {
                     if (log.isDebugEnabled()) {
-                        log.debug(sm.getString("catalina.configFail",
-                                "server-embed.xml"), e);
+                        log.debug(sm.getString("catalina.configFail", "server-embed.xml"), e);
                     }
                 }
             }
@@ -586,11 +596,9 @@ public class Catalina {
 
             if (inputStream == null || inputSource == null) {
                 if  (file == null) {
-                    log.warn(sm.getString("catalina.configFail",
-                            getConfigFile() + "] or [server-embed.xml]"));
+                    log.warn(sm.getString("catalina.configFail", getConfigFile() + "] or [server-embed.xml]"));
                 } else {
-                    log.warn(sm.getString("catalina.configFail",
-                            file.getAbsolutePath()));
+                    log.warn(sm.getString("catalina.configFail", file.getAbsolutePath()));
                     if (file.exists() && !file.canRead()) {
                         log.warn("Permissions incorrect, read permission is not allowed on the file.");
                     }
@@ -600,11 +608,16 @@ public class Catalina {
 
             try {
                 inputSource.setByteStream(inputStream);
+                /**
+                 * mark_t8:用于接收 Digester 对 Server.xml解析结果
+                 */
                 digester.push(this);
+                /**
+                 * mark_t9:执行 Digester 对 Server.xml解析结果赋值到java对象上
+                 */
                 digester.parse(inputSource);
             } catch (SAXParseException spe) {
-                log.warn("Catalina.start using " + getConfigFile() + ": " +
-                        spe.getMessage());
+                log.warn("Catalina.start using " + getConfigFile() + ": " +spe.getMessage());
                 return;
             } catch (Exception e) {
                 log.warn("Catalina.start using " + getConfigFile() + ": " , e);
@@ -620,15 +633,25 @@ public class Catalina {
             }
         }
 
+        /**
+         * mark_t9:Server持有Catalina
+         */
         getServer().setCatalina(this);
         getServer().setCatalinaHome(Bootstrap.getCatalinaHomeFile());
         getServer().setCatalinaBase(Bootstrap.getCatalinaBaseFile());
 
         // Stream redirection
+        /**
+         * mark_t?9
+         * 重置流
+         */
         initStreams();
 
         // Start the new server
         try {
+            /**
+             * mark_t10:真正初始化Server
+             */
             getServer().init();
         } catch (LifecycleException e) {
             if (Boolean.getBoolean("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE")) {
@@ -678,6 +701,9 @@ public class Catalina {
 
         // Start the new server
         try {
+            /**
+             * mark_t20:真正启动Server
+             */
             getServer().start();
         } catch (LifecycleException e) {
             log.fatal(sm.getString("catalina.serverStartFail"), e);
@@ -808,8 +834,7 @@ public class Catalina {
         } else {
             System.setProperty("catalina.useNaming", "true");
             String value = "org.apache.naming";
-            String oldValue =
-                System.getProperty(javax.naming.Context.URL_PKG_PREFIXES);
+            String oldValue = System.getProperty(javax.naming.Context.URL_PKG_PREFIXES);
             if (oldValue != null) {
                 value = value + ":" + oldValue;
             }
@@ -817,8 +842,7 @@ public class Catalina {
             if( log.isDebugEnabled() ) {
                 log.debug("Setting naming prefix=" + value);
             }
-            value = System.getProperty
-                (javax.naming.Context.INITIAL_CONTEXT_FACTORY);
+            value = System.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY);
             if (value == null) {
                 System.setProperty
                     (javax.naming.Context.INITIAL_CONTEXT_FACTORY,

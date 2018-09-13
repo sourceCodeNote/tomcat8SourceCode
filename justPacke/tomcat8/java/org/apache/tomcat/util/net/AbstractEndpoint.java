@@ -55,7 +55,7 @@ import org.apache.tomcat.util.threads.ThreadPoolExecutor;
  * @author Mladen Turk
  * @author Remy Maucherat
  */
-public abstract class AbstractEndpoint<S> {
+    public abstract class AbstractEndpoint<S> {
 
     // -------------------------------------------------------------- Constants
 

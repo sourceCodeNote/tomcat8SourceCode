@@ -235,6 +235,9 @@ public class StandardEngine extends ContainerBase implements Engine {
     }
 
 
+    /**
+     * mark_t16:engine初始化
+     */
     @Override
     protected void initInternal() throws LifecycleException {
         // Ensure that a Realm is present before any attempt is made to start

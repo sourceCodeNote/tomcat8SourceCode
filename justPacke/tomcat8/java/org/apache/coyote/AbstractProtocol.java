@@ -582,12 +582,18 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
     }
 
 
+    /**
+     * mark_t31:NIO协议处理器启动
+     */
     @Override
     public void start() throws Exception {
         if (getLog().isInfoEnabled()) {
             getLog().info(sm.getString("abstractProtocolHandler.start", getName()));
         }
 
+        /**
+         * mark_t32:endpoint启动
+         */
         endpoint.start();
 
         // Start async timeout thread

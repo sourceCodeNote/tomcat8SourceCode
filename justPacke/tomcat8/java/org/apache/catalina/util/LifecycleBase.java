@@ -96,6 +96,9 @@ public abstract class LifecycleBase implements Lifecycle {
     }
 
 
+    /**
+     * mark_t11:[Server.init,Service.init,engine.init]
+     */
     @Override
     public final synchronized void init() throws LifecycleException {
         if (!state.equals(LifecycleState.NEW)) {
@@ -119,6 +122,7 @@ public abstract class LifecycleBase implements Lifecycle {
 
     /**
      * {@inheritDoc}
+     * mark_t21:[Server.start,Service.start]
      */
     @Override
     public final synchronized void start() throws LifecycleException {
@@ -147,6 +151,9 @@ public abstract class LifecycleBase implements Lifecycle {
 
         try {
             setStateInternal(LifecycleState.STARTING_PREP, null, false);
+            /**
+             * mark_t211:各个组件的Start
+             */
             startInternal();
             if (state.equals(LifecycleState.FAILED)) {
                 // This is a 'controlled' failure. The component put itself into the

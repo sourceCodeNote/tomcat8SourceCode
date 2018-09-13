@@ -1002,19 +1002,22 @@ public class Connector extends LifecycleMBeanBase  {
      * Begin processing requests via this Connector.
      *
      * @exception LifecycleException if a fatal startup error occurs
+     * mark_t30:Connector启动,连接器启动
      */
     @Override
     protected void startInternal() throws LifecycleException {
 
         // Validate settings before starting
         if (getPort() < 0) {
-            throw new LifecycleException(sm.getString(
-                    "coyoteConnector.invalidPort", Integer.valueOf(getPort())));
+            throw new LifecycleException(sm.getString("coyoteConnector.invalidPort", Integer.valueOf(getPort())));
         }
 
         setState(LifecycleState.STARTING);
 
         try {
+            /**
+             * mark_t301:协议处理器启动
+             */
             protocolHandler.start();
         } catch (Exception e) {
             throw new LifecycleException(

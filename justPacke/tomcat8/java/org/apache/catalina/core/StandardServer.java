@@ -43,6 +43,7 @@ import org.apache.catalina.Service;
 import org.apache.catalina.deploy.NamingResourcesImpl;
 import org.apache.catalina.mbeans.MBeanFactory;
 import org.apache.catalina.startup.Catalina;
+import org.apache.catalina.startup.myLearn.MyThread;
 import org.apache.catalina.util.ExtensionValidator;
 import org.apache.catalina.util.LifecycleMBeanBase;
 import org.apache.catalina.util.ServerInfo;
@@ -293,7 +294,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public String getAddress() {
-
+        MyThread.addInfo(this.address);
         return (this.address);
 
     }
@@ -340,6 +341,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public Catalina getCatalina() {
+        MyThread.addInfo(catalina);
         return catalina;
     }
 
@@ -573,7 +575,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public Service[] findServices() {
-
+        MyThread.addInfo(services);
         return services;
 
     }
@@ -778,6 +780,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      *
      * @exception LifecycleException if this component detects a fatal error
      *  that prevents this component from being used
+     *  mark_t22:具体Server启动点
      */
     @Override
     protected void startInternal() throws LifecycleException {
@@ -785,11 +788,17 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         fireLifecycleEvent(CONFIGURE_START_EVENT, null);
         setState(LifecycleState.STARTING);
 
+        /**
+         * mark_t22?:命名空间Start?
+         */
         globalNamingResources.start();
 
         // Start our defined Services
         synchronized (servicesLock) {
             for (int i = 0; i < services.length; i++) {
+                /**
+                 * mark_t23:循环启动Service
+                 */
                 services[i].start();
             }
         }
@@ -826,6 +835,9 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     @Override
     protected void initInternal() throws LifecycleException {
 
+        /**
+         * mark_t12:调用父类方法缓存?
+         */
         super.initInternal();
 
         // Register global String cache
@@ -871,6 +883,9 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
             }
         }
         // Initialize our defined Services
+        /**
+         * mark_t13:循环初始化Service
+         */
         for (int i = 0; i < services.length; i++) {
             services[i].init();
         }

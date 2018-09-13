@@ -71,12 +71,10 @@ final class StandardEngineValve extends ValveBase {
         throws IOException, ServletException {
 
         // Select the Host to be used for this Request
-        Host host = request.getHost();
+        Host host = request.getHost(); //TODO 何时赋予 Host实例
         if (host == null) {
-            response.sendError
-                (HttpServletResponse.SC_BAD_REQUEST,
-                 sm.getString("standardEngine.noHost",
-                              request.getServerName()));
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    sm.getString("standardEngine.noHost",request.getServerName()));
             return;
         }
         if (request.isAsyncSupported()) {
@@ -84,6 +82,7 @@ final class StandardEngineValve extends ValveBase {
         }
 
         // Ask this Host to process this request
+        //TODO 何时将 pipeline 实例化 赋予,并实例化 Value 对象
         host.getPipeline().getFirst().invoke(request, response);
 
     }
