@@ -30,42 +30,43 @@ class DirectJDKLog implements Log {
     // no reason to hide this - but good reasons to not hide
     public final Logger logger;
 
-    /** Alternate config reader and console format
+    /**
+     * Alternate config reader and console format
      */
-    private static final String SIMPLE_FMT="java.util.logging.SimpleFormatter";
-    private static final String SIMPLE_CFG="org.apache.juli.JdkLoggerConfig"; //doesn't exist
-    private static final String FORMATTER="org.apache.juli.formatter";
+    private static final String SIMPLE_FMT = "java.util.logging.SimpleFormatter";
+    private static final String SIMPLE_CFG = "org.apache.juli.JdkLoggerConfig"; //doesn't exist
+    private static final String FORMATTER = "org.apache.juli.formatter";
 
     static {
-        if( System.getProperty("java.util.logging.config.class") ==null  &&
-                System.getProperty("java.util.logging.config.file") ==null ) {
+        if (System.getProperty("java.util.logging.config.class") == null &&
+                System.getProperty("java.util.logging.config.file") == null) {
             // default configuration - it sucks. Let's override at least the
             // formatter for the console
             try {
                 Class.forName(SIMPLE_CFG).getConstructor().newInstance();
-            } catch( Throwable t ) {
+            } catch (Throwable t) {
             }
             try {
-                Formatter fmt= (Formatter) Class.forName(System.getProperty(
+                Formatter fmt = (Formatter) Class.forName(System.getProperty(
                         FORMATTER, SIMPLE_FMT)).getConstructor().newInstance();
                 // it is also possible that the user modified jre/lib/logging.properties -
                 // but that's really stupid in most cases
-                Logger root=Logger.getLogger("");
+                Logger root = Logger.getLogger("");
                 for (Handler handler : root.getHandlers()) {
                     // I only care about console - that's what's used in default config anyway
-                    if (handler instanceof  ConsoleHandler) {
+                    if (handler instanceof ConsoleHandler) {
                         handler.setFormatter(fmt);
                     }
                 }
-            } catch( Throwable t ) {
+            } catch (Throwable t) {
                 // maybe it wasn't included - the ugly default will be used.
             }
 
         }
     }
 
-    public DirectJDKLog(String name ) {
-        logger=Logger.getLogger(name);
+    public DirectJDKLog(String name) {
+        logger = Logger.getLogger(name);
     }
 
     @Override
@@ -85,7 +86,7 @@ class DirectJDKLog implements Log {
 
     @Override
     public final boolean isDebugEnabled() {
-        return logger.isLoggable(Level.FINE);
+        return true;//logger.isLoggable(Level.FINE);
     }
 
     @Override
@@ -164,28 +165,29 @@ class DirectJDKLog implements Log {
     // worse than the unfriendly and uncommon default format for logs.
 
     private void log(Level level, String msg, Throwable ex) {
-        if (logger.isLoggable(level)) {
-            // Hack (?) to get the stack trace.
-            Throwable dummyException=new Throwable();
-            StackTraceElement locations[]=dummyException.getStackTrace();
-            // Caller will be the third element
-            String cname = "unknown";
-            String method = "unknown";
-            if (locations != null && locations.length >2) {
-                StackTraceElement caller = locations[2];
-                cname = caller.getClassName();
-                method = caller.getMethodName();
-            }
-            if (ex==null) {
-                logger.logp(level, cname, method, msg);
-            } else {
-                logger.logp(level, cname, method, msg, ex);
-            }
+        // if (logger.isLoggable(level)) {
+        // Hack (?) to get the stack trace.
+        Throwable dummyException = new Throwable();
+        StackTraceElement locations[] = dummyException.getStackTrace();
+        // Caller will be the third element
+        String cname = "unknown";
+        String method = "unknown";
+        if (locations != null && locations.length > 2) {
+            StackTraceElement caller = locations[2];
+            cname = caller.getClassName();
+            method = caller.getMethodName();
         }
+        level = Level.INFO;
+        if (ex == null) {
+           // logger.logp(level, cname, method, msg);
+        } else {
+           // logger.logp(level, cname, method, msg, ex);
+        }
+        // }
     }
 
     static Log getInstance(String name) {
-        return new DirectJDKLog( name );
+        return new DirectJDKLog(name);
     }
 }
 

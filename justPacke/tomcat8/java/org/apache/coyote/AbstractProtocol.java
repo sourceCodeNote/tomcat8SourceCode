@@ -712,6 +712,9 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
         }
 
 
+        /**
+         * mark_t:req5010
+         **/
         @Override
         public SocketState process(SocketWrapperBase<S> wrapper, SocketEvent status) {
             if (getLog().isDebugEnabled()) {
@@ -727,8 +730,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
 
             Processor processor = connections.get(socket);
             if (getLog().isDebugEnabled()) {
-                getLog().debug(sm.getString("abstractConnectionHandler.connectionsGet",
-                        processor, socket));
+                getLog().debug(sm.getString("abstractConnectionHandler.connectionsGet", processor, socket));
             }
 
             // Async timeouts are calculated on a dedicated thread and then
@@ -809,6 +811,9 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
 
                 SocketState state = SocketState.CLOSED;
                 do {
+                    /**
+                     * mark_t:req50101
+                     **/
                     state = processor.process(wrapper, status);
 
                     if (state == SocketState.UPGRADING) {

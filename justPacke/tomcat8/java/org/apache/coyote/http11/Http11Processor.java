@@ -658,6 +658,9 @@ public class Http11Processor extends AbstractProcessor {
     }
 
 
+    /**
+     * mark_t:req50121
+     **/
     @Override
     public SocketState service(SocketWrapperBase<?> socketWrapper)
         throws IOException {
@@ -797,6 +800,9 @@ public class Http11Processor extends AbstractProcessor {
             if (!getErrorState().isError()) {
                 try {
                     rp.setStage(org.apache.coyote.Constants.STAGE_SERVICE);
+                    /**
+                     * mark_t:req5012
+                     **/
                     getAdapter().service(request, response);
                     // Handle when the response was committed before a serious
                     // error occurred.  Throwing a ServletException should both

@@ -344,8 +344,7 @@ public final class Mapper {
             }
 
             ContextVersion[] contextVersions = context.versions;
-            ContextVersion[] newContextVersions =
-                new ContextVersion[contextVersions.length - 1];
+            ContextVersion[] newContextVersions = new ContextVersion[contextVersions.length - 1];
             if (removeMap(contextVersions, newContextVersions, version)) {
                 if (newContextVersions.length == 0) {
                     // Remove the context

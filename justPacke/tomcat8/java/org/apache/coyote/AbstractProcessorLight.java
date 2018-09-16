@@ -36,13 +36,18 @@ public abstract class AbstractProcessorLight implements Processor {
 
     private Set<DispatchType> dispatches = new CopyOnWriteArraySet<>();
 
-
+    /**
+     * mark_t:req5011
+     **/
     @Override
     public SocketState process(SocketWrapperBase<?> socketWrapper, SocketEvent status)
             throws IOException {
 
         SocketState state = SocketState.CLOSED;
         Iterator<DispatchType> dispatches = null;
+        /**
+         * mark_t:req50111
+         **/
         do {
             if (dispatches != null) {
                 DispatchType nextDispatch = dispatches.next();

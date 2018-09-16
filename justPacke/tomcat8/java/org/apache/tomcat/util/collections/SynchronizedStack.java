@@ -27,7 +27,10 @@ package org.apache.tomcat.util.collections;
  */
 public class SynchronizedStack<T> {
 
-    public static final int DEFAULT_SIZE = 128;
+    /**
+     * mark_t:指定 poller EVENT大小
+     **/
+    public static final int DEFAULT_SIZE = 1;//128;
     private static final int DEFAULT_LIMIT = -1;
 
     private int size;

@@ -635,7 +635,10 @@ import org.apache.tomcat.util.threads.ThreadPoolExecutor;
     /**
      * Maximum amount of worker threads.
      */
-    private int maxThreads = 200;
+    /**
+     * mark_t:指定处理 exceutor大小
+     **/
+    private int maxThreads = 1;//200;
     public void setMaxThreads(int maxThreads) {
         this.maxThreads = maxThreads;
         Executor executor = this.executor;

@@ -135,7 +135,10 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
     /**
      * Priority of the poller threads.
      */
-    private int pollerThreadPriority = Thread.NORM_PRIORITY;
+    /**
+     * mark_t:指定 poller大小
+     **/
+    private int pollerThreadPriority = 1;//Thread.NORM_PRIORITY;
     public void setPollerThreadPriority(int pollerThreadPriority) { this.pollerThreadPriority = pollerThreadPriority; }
     public int getPollerThreadPriority() { return pollerThreadPriority; }
 
@@ -143,9 +146,19 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
     /**
      * Poller thread count.
      */
-    private int pollerThreadCount = Math.min(2,Runtime.getRuntime().availableProcessors());
-    public void setPollerThreadCount(int pollerThreadCount) { this.pollerThreadCount = pollerThreadCount; }
-    public int getPollerThreadCount() { return pollerThreadCount; }
+    private int pollerThreadCount = 1;//Math.min(2,Runtime.getRuntime().availableProcessors());
+    public void setPollerThreadCount(int pollerThreadCount) {
+        /**
+         * mark_t:指定 poller大小
+         **/
+        this.pollerThreadCount = pollerThreadCount;
+    }
+    public int getPollerThreadCount() {
+        /**
+         * mark_t:指定 poller大小
+         **/
+        return pollerThreadCount;
+    }
 
     private long selectorTimeout = 1000;
     public void setSelectorTimeout(long timeout){ this.selectorTimeout = timeout;}
@@ -417,6 +430,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
                 channel.setIOChannel(socket);
                 channel.reset();
             }
+            /**
+             * mark_t: 随机获得Poller数组中的一个,处理包装后的Socket请求--NioChannel
+             **/
             getPoller0().register(channel);
         } catch (Throwable t) {
             ExceptionUtils.handleThrowable(t);
@@ -472,12 +488,18 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
                 if (!running) {
                     break;
                 }
+                /**
+                 * mark_t:
+                 **/
                 state = AcceptorState.RUNNING;
 
                 try {
                     //if we have reached max connections, wait
                     countUpOrAwaitConnection();
 
+                    /**
+                     * mark_t:Acceptor监听并处理SocketChannel请求
+                     **/
                     SocketChannel socket = null;
                     try {
                         // Accept the next incoming connection from the server
@@ -502,6 +524,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
                     if (running && !paused) {
                         // setSocketOptions() will hand the socket off to
                         // an appropriate processor if successful
+                        /**
+                         * mark_t:将socket注册到 @see org.apache.tomcat.util.net.NioEndPoint.Poller 中处理
+                         **/
                         if (!setSocketOptions(socket)) {
                             closeSocket(socket);
                         }
@@ -597,8 +622,10 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
         public void run() {
             if (interestOps == OP_REGISTER) {
                 try {
-                    socket.getIOChannel().register(
-                            socket.getPoller().getSelector(), SelectionKey.OP_READ, socketWrapper);
+                    /**
+                     * mark_t:?
+                     **/
+                    socket.getIOChannel().register(socket.getPoller().getSelector(), SelectionKey.OP_READ, socketWrapper);
                 } catch (Exception x) {
                     log.error(sm.getString("endpoint.nio.registerFail"), x);
                 }
@@ -645,8 +672,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
     public class Poller implements Runnable {
 
         private Selector selector;
-        private final SynchronizedQueue<PollerEvent> events =
-                new SynchronizedQueue<>();
+        private final SynchronizedQueue<PollerEvent> events = new SynchronizedQueue<>();
 
         private volatile boolean close = false;
         private long nextExpiration = 0;//optimize expiration handling
@@ -742,6 +768,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
             ka.setSecure(isSSLEnabled());
             ka.setReadTimeout(getConnectionTimeout());
             ka.setWriteTimeout(getConnectionTimeout());
+            /**
+             * mark_t:将请求包装体NioChannel
+             **/
             PollerEvent r = eventCache.pop();
             ka.interestOps(SelectionKey.OP_READ);//this is what OP_REGISTER turns into.
             if ( r==null) r = new PollerEvent(socket,ka,OP_REGISTER);
@@ -1121,7 +1150,11 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
         }
 
         public Poller getPoller() { return poller;}
-        public void setPoller(Poller poller){this.poller = poller;}
+        public void setPoller(Poller poller){
+            if (poller == null) {
+                this.poller = poller;
+            }
+        }
         public int interestOps() { return interestOps;}
         public int interestOps(int ops) { this.interestOps  = ops; return ops; }
         public CountDownLatch getReadLatch() { return readLatch; }
@@ -1455,6 +1488,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
             super(socketWrapper, event);
         }
 
+        /**
+         * mark_t:req5001
+         **/
         @Override
         protected void doRun() {
             NioChannel socket = socketWrapper.getSocket();

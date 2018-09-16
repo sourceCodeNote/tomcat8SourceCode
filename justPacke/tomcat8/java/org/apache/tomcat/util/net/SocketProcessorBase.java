@@ -35,6 +35,9 @@ public abstract class SocketProcessorBase<S> implements Runnable {
     }
 
 
+    /**
+     * mark_t:req5
+     **/
     @Override
     public final void run() {
         synchronized (socketWrapper) {

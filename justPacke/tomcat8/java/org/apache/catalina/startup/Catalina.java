@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.LogManager;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.catalina.Container;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
@@ -310,6 +311,9 @@ public class Catalina {
                             "addLifecycleListener",
                             "org.apache.catalina.LifecycleListener");
 
+        /**
+         * mark_t:构造Service实例
+         **/
         digester.addObjectCreate("Server/Service",
                                  "org.apache.catalina.core.StandardService",
                                  "className");
@@ -318,6 +322,9 @@ public class Catalina {
                             "addService",
                             "org.apache.catalina.Service");
 
+        /**
+         * mark_t:为Service添加监听器
+         **/
         digester.addObjectCreate("Server/Service/Listener",
                                  null, // MUST be specified in the element
                                  "className");
@@ -327,6 +334,9 @@ public class Catalina {
                             "org.apache.catalina.LifecycleListener");
 
         //Executor
+        /**
+         * mark_t:为Service添加Executor
+         **/
         digester.addObjectCreate("Server/Service/Executor",
                          "org.apache.catalina.core.StandardThreadExecutor",
                          "className");
@@ -337,6 +347,9 @@ public class Catalina {
                             "org.apache.catalina.Executor");
 
 
+        /**
+         * mark_t:为Service添加Connector
+         **/
         digester.addRule("Server/Service/Connector",
                          new ConnectorCreateRule());
         digester.addRule("Server/Service/Connector",
@@ -345,6 +358,9 @@ public class Catalina {
                             "addConnector",
                             "org.apache.catalina.connector.Connector");
 
+        /**
+         * mark_t:为Service添加虚拟主机
+         **/
         digester.addObjectCreate("Server/Service/Connector/SSLHostConfig",
                                  "org.apache.tomcat.util.net.SSLHostConfig");
         digester.addSetProperties("Server/Service/Connector/SSLHostConfig");
@@ -360,6 +376,9 @@ public class Catalina {
                             "addCertificate",
                             "org.apache.tomcat.util.net.SSLHostConfigCertificate");
 
+        /**
+         * mark_t
+         **/
         digester.addObjectCreate("Server/Service/Connector/SSLHostConfig/OpenSSLConf",
                                  "org.apache.tomcat.util.net.openssl.OpenSSLConf");
         digester.addSetProperties("Server/Service/Connector/SSLHostConfig/OpenSSLConf");
@@ -391,6 +410,9 @@ public class Catalina {
                             "org.apache.coyote.UpgradeProtocol");
 
         // Add RuleSets for nested elements
+        /**
+         * mark_t:为子元素添加解析规则
+         **/
         digester.addRuleSet(new NamingRuleSet("Server/GlobalNamingResources/"));
         digester.addRuleSet(new EngineRuleSet("Server/Service/"));
         digester.addRuleSet(new HostRuleSet("Server/Service/Engine/"));
@@ -399,8 +421,7 @@ public class Catalina {
         digester.addRuleSet(new NamingRuleSet("Server/Service/Engine/Host/Context/"));
 
         // When the 'engine' is found, set the parentClassLoader.
-        digester.addRule("Server/Service/Engine",
-                         new SetParentClassLoaderRule(parentClassLoader));
+        digester.addRule("Server/Service/Engine", new SetParentClassLoaderRule(parentClassLoader));
         addClusterRuleSet(digester, "Server/Service/Engine/Cluster/");
 
         long t2=System.currentTimeMillis();
@@ -616,6 +637,7 @@ public class Catalina {
                  * mark_t9:执行 Digester 对 Server.xml解析结果赋值到java对象上
                  */
                 digester.parse(inputSource);
+                System.err.println(JSON.toJSONString(this));
             } catch (SAXParseException spe) {
                 log.warn("Catalina.start using " + getConfigFile() + ": " +spe.getMessage());
                 return;

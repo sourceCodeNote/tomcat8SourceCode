@@ -295,7 +295,9 @@ public class CoyoteAdapter implements Adapter {
     }
 
 
-
+    /**
+     * mark_t:req6001
+     **/
     //TODO 请求 开始处理的地方
     @Override
     public void service(org.apache.coyote.Request req, org.apache.coyote.Response res)
